@@ -1,27 +1,32 @@
 import {
   checkFilesExist,
   cleanupProject,
-  packageInstall,
+  newProject,
   readJson,
+  removeFile,
   runCLI,
-  runCreateWorkspace,
   uniq,
+  updateJson,
 } from '@nrwl/e2e/utils';
 
 describe('create-nx-workspace --preset=npm', () => {
   let wsName;
 
+  beforeAll(() => {
+    wsName = newProject({ preset: 'npm' });
+  });
+
+  afterAll(() => cleanupProject());
+
   beforeEach(() => {
-    wsName = uniq('npm');
-    runCreateWorkspace(wsName, {
-      preset: 'npm',
+    removeFile('tsconfig.base.json');
+    updateJson('package.json', (json) => {
+      delete json.devDependencies['typescript'];
+      return json;
     });
   });
 
-  afterEach(() => cleanupProject());
-
   it('should add angular application', () => {
-    packageInstall('@nrwl/angular', wsName);
     const appName = uniq('my-app');
 
     expect(() => {
@@ -31,7 +36,6 @@ describe('create-nx-workspace --preset=npm', () => {
   }, 1_000_000);
 
   it('should add angular library', () => {
-    packageInstall('@nrwl/angular', wsName);
     const libName = uniq('lib');
 
     expect(() => {
@@ -45,8 +49,6 @@ describe('create-nx-workspace --preset=npm', () => {
   }, 1_000_000);
 
   it('should add workspace library', () => {
-    packageInstall('@nrwl/workspace', wsName);
-
     const libName = uniq('lib');
 
     expect(() =>
@@ -60,8 +62,6 @@ describe('create-nx-workspace --preset=npm', () => {
   });
 
   it('should add js library', () => {
-    packageInstall('@nrwl/js', wsName);
-
     const libName = uniq('lib');
 
     expect(() =>
@@ -75,8 +75,6 @@ describe('create-nx-workspace --preset=npm', () => {
   });
 
   it('should add web application', () => {
-    packageInstall('@nrwl/web', wsName);
-
     const appName = uniq('my-app');
 
     expect(() =>
@@ -86,8 +84,6 @@ describe('create-nx-workspace --preset=npm', () => {
   });
 
   it('should add react application', () => {
-    packageInstall('@nrwl/react', wsName);
-
     const appName = uniq('my-app');
 
     expect(() => {
@@ -97,8 +93,6 @@ describe('create-nx-workspace --preset=npm', () => {
   });
 
   it('should add react library', () => {
-    packageInstall('@nrwl/react', wsName);
-
     const libName = uniq('lib');
 
     expect(() => {
@@ -112,8 +106,6 @@ describe('create-nx-workspace --preset=npm', () => {
   });
 
   it('should add next application', () => {
-    packageInstall('@nrwl/next', wsName);
-
     const appName = uniq('my-app');
 
     expect(() => {
@@ -123,8 +115,6 @@ describe('create-nx-workspace --preset=npm', () => {
   });
 
   it('should add next library', () => {
-    packageInstall('@nrwl/next', wsName);
-
     const libName = uniq('lib');
 
     expect(() => {
@@ -138,8 +128,6 @@ describe('create-nx-workspace --preset=npm', () => {
   });
 
   it('should add react-native application', () => {
-    packageInstall('@nrwl/react-native', wsName);
-
     const appName = uniq('my-app');
 
     expect(() => {
@@ -149,8 +137,6 @@ describe('create-nx-workspace --preset=npm', () => {
   });
 
   it('should add react-native library', () => {
-    packageInstall('@nrwl/react-native', wsName);
-
     const libName = uniq('lib');
 
     expect(() => {
@@ -164,8 +150,6 @@ describe('create-nx-workspace --preset=npm', () => {
   });
 
   it('should add node application', () => {
-    packageInstall('@nrwl/node', wsName);
-
     const appName = uniq('my-app');
 
     expect(() => {
@@ -175,8 +159,6 @@ describe('create-nx-workspace --preset=npm', () => {
   });
 
   it('should add node library', () => {
-    packageInstall('@nrwl/node', wsName);
-
     const libName = uniq('lib');
 
     expect(() => {
@@ -190,8 +172,6 @@ describe('create-nx-workspace --preset=npm', () => {
   });
 
   it('should add nest application', () => {
-    packageInstall('@nrwl/nest', wsName);
-
     const appName = uniq('my-app');
 
     expect(() => {
@@ -201,8 +181,6 @@ describe('create-nx-workspace --preset=npm', () => {
   });
 
   it('should add nest library', () => {
-    packageInstall('@nrwl/nest', wsName);
-
     const libName = uniq('lib');
 
     expect(() => {
@@ -216,8 +194,6 @@ describe('create-nx-workspace --preset=npm', () => {
   });
 
   it('should add express application', () => {
-    packageInstall('@nrwl/express', wsName);
-
     const appName = uniq('my-app');
 
     expect(() => {
